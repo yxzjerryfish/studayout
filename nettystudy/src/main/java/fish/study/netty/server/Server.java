@@ -15,6 +15,7 @@ public class Server {
         NioEventLoopGroup r = new NioEventLoopGroup();
 
         bootstrap.group(w,r).channel(NioServerSocketChannel.class).childHandler(new ChannelInitializer<NioSocketChannel>() {
+            @Override
             protected void initChannel(NioSocketChannel nioSocketChannel) throws Exception {
 
             }
