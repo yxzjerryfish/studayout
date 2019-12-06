@@ -23,23 +23,18 @@ public class Client {
 
         bootstrap.group(w)
                 .channel(NioSocketChannel.class)
-                .handler(new ChannelInitializer<NioServerSocketChannel>() {
+                .handler(new ChannelInitializer<NioSocketChannel>() {
 
                     @Override
-                    protected void initChannel(NioServerSocketChannel nioServerSocketChannel) throws Exception {
-                        nioServerSocketChannel.pipeline().addLast(new ChannelInboundHandlerAdapter(){
-                            @Override
-                            public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-                                System.out.println(LocalDateTime.now()+ ": 客户端写出数据");
-                                byte[] bytes = "你好!".getBytes(StandardCharsets.UTF_8);
+                    protected void initChannel(NioSocketChannel ch) throws Exception {
+                        System.out.println(LocalDateTime.now()+ ": 客户端写出数据");
+                        byte[] bytes = "你好!".getBytes(StandardCharsets.UTF_8);
 
-                                ByteBuf buffer = ctx.alloc().buffer();
+                        ByteBuf buffer = ch.alloc().buffer();
 
-                                buffer.writeBytes(bytes);
+                        buffer.writeBytes(bytes);
 
-                                ctx.channel().writeAndFlush(buffer);
-                            }
-                        });
+                        ch.writeAndFlush(buffer);
                     }
                 });
 
