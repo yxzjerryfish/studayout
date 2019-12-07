@@ -1,11 +1,13 @@
 package fish.study.netty.model;
 
+import fish.study.netty.constant.PacketConstant;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class LoginRequestPacket extends Packet{
 
-    private static Byte LOGIN_REQUEST = 1;
 
     private Integer userId;
 
@@ -13,8 +15,8 @@ public class LoginRequestPacket extends Packet{
 
     private String password;
 
-
+    @Override
     public Byte getCommand() {
-        return LOGIN_REQUEST;
+        return PacketConstant.LOGIN_REQUEST;
     }
 }
