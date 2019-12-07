@@ -18,5 +18,8 @@ public interface Serializer {
      */
     <T> T deserialize(Class<T> clazz, byte[] bytes);
 
+    /**
+     * 默认序列化方法
+     */
     Serializer DEFAULT = new JsonSerializer();
 }
