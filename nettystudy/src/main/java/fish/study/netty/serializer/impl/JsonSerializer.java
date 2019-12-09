@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import fish.study.netty.constant.PacketConstant;
 import fish.study.netty.serializer.Serializer;
 
+
 public class JsonSerializer implements Serializer {
     @Override
     public byte getSerializerAlgorithm() {

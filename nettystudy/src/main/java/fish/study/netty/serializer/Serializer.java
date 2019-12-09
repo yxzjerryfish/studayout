@@ -2,6 +2,7 @@ package fish.study.netty.serializer;
 
 import fish.study.netty.serializer.impl.JsonSerializer;
 
+
 public interface Serializer {
     /**
      * 序列化算法
