@@ -1,5 +1,6 @@
 package fish.study.netty.client;
 
+import fish.study.netty.client.handler.ClientHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -40,6 +41,7 @@ public class Client {
                                ctx.channel().writeAndFlush(buffer);
                            }
                        });
+                       ch.pipeline().addLast(new ClientHandler());
                     }
                 });
 

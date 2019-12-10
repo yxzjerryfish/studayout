@@ -1,5 +1,6 @@
 package fish.study.netty.server;
 
+import fish.study.netty.server.handler.ServerHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
@@ -31,6 +32,7 @@ public class Server {
                         System.out.println(LocalDateTime.now() + ": 服务端读到数据 -> " + byteBuf.toString(StandardCharsets.UTF_8));
                     }
                 });
+                nioSocketChannel.pipeline().addLast(new ServerHandler());
             }
         }).bind(6546);
     }
