@@ -27,7 +27,7 @@ public class PacketCode {
         serializerMap.put(serializer.getSerializerAlgorithm(), serializer);
     }
 
-    public ByteBuf encode(Packet packet) {
+    public static ByteBuf encode(Packet packet) {
         // 1. 创建 ByteBuf 对象
         ByteBuf byteBuf = ByteBufAllocator.DEFAULT.ioBuffer();
         // 2. 序列化 Java 对象
@@ -44,7 +44,7 @@ public class PacketCode {
         return byteBuf;
     }
 
-    public Packet decode(ByteBuf byteBuf) {
+    public static Packet decode(ByteBuf byteBuf) {
         // 跳过 magic number
         byteBuf.skipBytes(4);
 
@@ -73,12 +73,12 @@ public class PacketCode {
         return null;
     }
 
-    private Serializer getSerializer(byte serializeAlgorithm) {
+    private static Serializer getSerializer(byte serializeAlgorithm) {
 
         return serializerMap.get(serializeAlgorithm);
     }
 
-    private Class<? extends Packet> getRequestType(byte command) {
+    private static Class<? extends Packet> getRequestType(byte command) {
 
         return packetTypeMap.get(command);
     }

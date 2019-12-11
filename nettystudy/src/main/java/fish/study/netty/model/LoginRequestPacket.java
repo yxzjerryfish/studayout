@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 public class LoginRequestPacket extends Packet{
 
 
-    private Integer userId;
+    private String userId;
 
     private String userName;
 
