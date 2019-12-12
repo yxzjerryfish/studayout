@@ -5,6 +5,8 @@ public interface PacketConstant {
 
     Byte LOGIN_REQUEST = 1;
 
+    Byte LOGIN_RESPONSE = 2;
+
     /**
      * json 序列化标识
      */

@@ -2,6 +2,7 @@ package fish.study.netty.packet;
 
 import com.alibaba.fastjson.serializer.JSONSerializer;
 import fish.study.netty.model.LoginRequestPacket;
+import fish.study.netty.model.LoginResponsePacket;
 import fish.study.netty.model.Packet;
 import fish.study.netty.serializer.Serializer;
 import fish.study.netty.serializer.impl.JsonSerializer;
@@ -12,25 +13,32 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static fish.study.netty.constant.PacketConstant.LOGIN_REQUEST;
+import static fish.study.netty.constant.PacketConstant.LOGIN_RESPONSE;
 
 public class PacketCode {
     private static final int MAGIC_NUMBER = 0x12345678;
-    private static final Map<Byte, Class<? extends Packet>> packetTypeMap;
-    private static final Map<Byte, Serializer> serializerMap;
+    public static final PacketCode INSTANCE = new PacketCode();
 
-    static {
+    private final Map<Byte, Class<? extends Packet>> packetTypeMap;
+    private final Map<Byte, Serializer> serializerMap;
+
+
+    private PacketCode() {
         packetTypeMap = new HashMap<>();
         packetTypeMap.put(LOGIN_REQUEST, LoginRequestPacket.class);
+        packetTypeMap.put(LOGIN_RESPONSE, LoginResponsePacket.class);
 
         serializerMap = new HashMap<>();
         Serializer serializer = new JsonSerializer();
         serializerMap.put(serializer.getSerializerAlgorithm(), serializer);
+
     }
 
-    public static ByteBuf encode(Packet packet) {
+
+    public ByteBuf encode(ByteBufAllocator byteBufAllocator, Packet packet) {
         // 1. 创建 ByteBuf 对象
-        ByteBuf byteBuf = ByteBufAllocator.DEFAULT.ioBuffer();
-        // 2. 序列化 Java 对象
+        ByteBuf byteBuf = byteBufAllocator.ioBuffer();
+        // 2. 序列化 java 对象
         byte[] bytes = Serializer.DEFAULT.serialize(packet);
 
         // 3. 实际编码过程
@@ -44,14 +52,15 @@ public class PacketCode {
         return byteBuf;
     }
 
-    public static Packet decode(ByteBuf byteBuf) {
+
+    public Packet decode(ByteBuf byteBuf) {
         // 跳过 magic number
         byteBuf.skipBytes(4);
 
         // 跳过版本号
         byteBuf.skipBytes(1);
 
-        // 序列化算法标识
+        // 序列化算法
         byte serializeAlgorithm = byteBuf.readByte();
 
         // 指令
@@ -73,12 +82,12 @@ public class PacketCode {
         return null;
     }
 
-    private static Serializer getSerializer(byte serializeAlgorithm) {
+    private Serializer getSerializer(byte serializeAlgorithm) {
 
         return serializerMap.get(serializeAlgorithm);
     }
 
-    private static Class<? extends Packet> getRequestType(byte command) {
+    private Class<? extends Packet> getRequestType(byte command) {
 
         return packetTypeMap.get(command);
     }
