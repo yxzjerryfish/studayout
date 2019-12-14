@@ -1,6 +1,8 @@
 package fish.study.netty.client.handler;
 
 import fish.study.netty.model.LoginRequestPacket;
+import fish.study.netty.model.LoginResponsePacket;
+import fish.study.netty.model.Packet;
 import fish.study.netty.packet.PacketCode;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -25,5 +27,22 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 
         // 写数据
         ctx.channel().writeAndFlush(buffer);
+    }
+
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        ByteBuf byteBuf = (ByteBuf) msg;
+
+        Packet packet = PacketCode.INSTANCE.decode(byteBuf);
+
+        if (packet instanceof LoginResponsePacket) {
+            LoginResponsePacket loginResponsePacket = (LoginResponsePacket) packet;
+
+            if (loginResponsePacket.isSuccess()) {
+                System.out.println(LocalDateTime.now() + ": 客户端登录成功");
+            } else {
+                System.out.println(LocalDateTime.now()  + ": 客户端登录失败，原因：" + loginResponsePacket.getReason());
+            }
+        }
     }
 }

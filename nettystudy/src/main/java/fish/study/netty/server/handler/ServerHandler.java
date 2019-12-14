@@ -19,16 +19,28 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
         System.out.println(JSON.toJSON(msg));
 
         Packet packet = PacketCode.INSTANCE.decode(byteBuf);
+        LoginResponsePacket loginResponsePacket = new LoginResponsePacket();
+        loginResponsePacket.setVersion(packet.getVersion());
 
         if (packet instanceof LoginRequestPacket) {
             LoginRequestPacket loginRequestPacket = (LoginRequestPacket) packet;
 
             if (valid(loginRequestPacket)) {
                 System.out.println(LocalDateTime.now() + ": 客户端登录成功");
+                loginResponsePacket.setSuccess(true);
             } else {
                 System.out.println(LocalDateTime.now()  + ": 客户端登录失败");
+                loginResponsePacket.setReason("账号密码校验失败");
+                loginResponsePacket.setSuccess(false);
             }
+
+            loginResponsePacket.setSuccess(true);
+            ByteBuf responseByteBuf = PacketCode.INSTANCE.encode(ctx.alloc(), loginResponsePacket);
+            ctx.channel().writeAndFlush(responseByteBuf);
+
         }
+
+
     }
 
     private Boolean valid(LoginRequestPacket loginRequestPacket){
