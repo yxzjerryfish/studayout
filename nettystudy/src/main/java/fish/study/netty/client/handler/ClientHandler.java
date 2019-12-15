@@ -2,6 +2,7 @@ package fish.study.netty.client.handler;
 
 import fish.study.netty.model.LoginRequestPacket;
 import fish.study.netty.model.LoginResponsePacket;
+import fish.study.netty.model.MessageResponsePacket;
 import fish.study.netty.model.Packet;
 import fish.study.netty.packet.PacketCode;
 import io.netty.buffer.ByteBuf;
@@ -43,6 +44,9 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
             } else {
                 System.out.println(LocalDateTime.now()  + ": 客户端登录失败，原因：" + loginResponsePacket.getReason());
             }
+        } else if(packet instanceof MessageResponsePacket){
+            MessageResponsePacket messageResponsePacket = (MessageResponsePacket) packet;
+            System.out.println(LocalDateTime.now() + ": 收到服务端的消息: " + messageResponsePacket.getMessage());
         }
     }
 }

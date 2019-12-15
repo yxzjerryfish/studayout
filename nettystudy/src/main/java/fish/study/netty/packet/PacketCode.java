@@ -1,9 +1,7 @@
 package fish.study.netty.packet;
 
 import com.alibaba.fastjson.serializer.JSONSerializer;
-import fish.study.netty.model.LoginRequestPacket;
-import fish.study.netty.model.LoginResponsePacket;
-import fish.study.netty.model.Packet;
+import fish.study.netty.model.*;
 import fish.study.netty.serializer.Serializer;
 import fish.study.netty.serializer.impl.JsonSerializer;
 import io.netty.buffer.ByteBuf;
@@ -12,8 +10,7 @@ import io.netty.buffer.ByteBufAllocator;
 import java.util.HashMap;
 import java.util.Map;
 
-import static fish.study.netty.constant.PacketConstant.LOGIN_REQUEST;
-import static fish.study.netty.constant.PacketConstant.LOGIN_RESPONSE;
+import static fish.study.netty.constant.PacketConstant.*;
 
 public class PacketCode {
     private static final int MAGIC_NUMBER = 0x12345678;
@@ -27,6 +24,8 @@ public class PacketCode {
         packetTypeMap = new HashMap<>();
         packetTypeMap.put(LOGIN_REQUEST, LoginRequestPacket.class);
         packetTypeMap.put(LOGIN_RESPONSE, LoginResponsePacket.class);
+        packetTypeMap.put(MESSAGE_REQUEST, MessageRequestPacket.class);
+        packetTypeMap.put(MESSAGE_RESPONSE, MessageResponsePacket.class);
 
         serializerMap = new HashMap<>();
         Serializer serializer = new JsonSerializer();

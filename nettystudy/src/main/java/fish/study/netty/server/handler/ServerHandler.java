@@ -1,9 +1,7 @@
 package fish.study.netty.server.handler;
 
 import com.alibaba.fastjson.JSON;
-import fish.study.netty.model.LoginRequestPacket;
-import fish.study.netty.model.LoginResponsePacket;
-import fish.study.netty.model.Packet;
+import fish.study.netty.model.*;
 import fish.study.netty.packet.PacketCode;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -38,7 +36,17 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
             ByteBuf responseByteBuf = PacketCode.INSTANCE.encode(ctx.alloc(), loginResponsePacket);
             ctx.channel().writeAndFlush(responseByteBuf);
 
+        } else if(packet instanceof MessageRequestPacket){
+            MessageRequestPacket messageRequestPacket = ((MessageRequestPacket) packet);
+            System.out.println(LocalDateTime.now() + ": 收到客户端消息: " + messageRequestPacket.getMessage());
+
+            MessageResponsePacket messageResponsePacket = new MessageResponsePacket();
+            messageResponsePacket.setMessage("服务端回复【" + messageRequestPacket.getMessage() + "】");
+            ByteBuf responseByteBuf = PacketCode.INSTANCE.encode(ctx.alloc(), messageResponsePacket);
+            ctx.channel().writeAndFlush(responseByteBuf);
         }
+
+
 
 
     }
