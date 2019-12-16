@@ -24,15 +24,15 @@ public class Server {
         bootstrap.group(w,r).channel(NioServerSocketChannel.class).childHandler(new ChannelInitializer<NioSocketChannel>() {
             @Override
             protected void initChannel(NioSocketChannel nioSocketChannel){
-//                nioSocketChannel.pipeline().addLast(new ChannelInboundHandlerAdapter(){
-//                    @Override
-//                    public void channelRead(ChannelHandlerContext ctx, Object msg) {
-//                        ByteBuf byteBuf = (ByteBuf) msg;
-//
-//                        System.out.println(LocalDateTime.now() + ": 服务端读到数据 -> " + byteBuf.toString(StandardCharsets.UTF_8));
-//                    }
-//                });
                 nioSocketChannel.pipeline().addLast(new ServerHandler());
+                nioSocketChannel.pipeline().addLast(new ChannelInboundHandlerAdapter(){
+                    @Override
+                    public void channelRead(ChannelHandlerContext ctx, Object msg) {
+                        ByteBuf byteBuf = (ByteBuf) msg;
+
+                        System.out.println(LocalDateTime.now() + ": 服务端读到数据 -> " + byteBuf.toString(StandardCharsets.UTF_8));
+                    }
+                });
             }
         }).bind(6546);
     }

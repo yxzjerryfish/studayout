@@ -28,20 +28,21 @@ public class Client {
 
                     @Override
                     protected void initChannel(NioSocketChannel ch)  {
-//                       ch.pipeline().addLast(new ChannelInboundHandlerAdapter(){
-//                           @Override
-//                           public void channelActive(ChannelHandlerContext ctx) {
-//                               System.out.println(LocalDateTime.now()+ ": 客户端写出数据");
-//                               byte[] bytes = "你好!".getBytes(StandardCharsets.UTF_8);
-//
-//                               ByteBuf buffer = ctx.alloc().buffer();
-//
-//                               buffer.writeBytes(bytes);
-//
-//                               ctx.channel().writeAndFlush(buffer);
-//                           }
-//                       });
-                       ch.pipeline().addLast(new ClientHandler());
+                        ch.pipeline().addLast(new ClientHandler());
+
+                        ch.pipeline().addLast(new ChannelInboundHandlerAdapter(){
+                           @Override
+                           public void channelActive(ChannelHandlerContext ctx) {
+                               System.out.println(LocalDateTime.now()+ ": 客户端写出数据");
+                               byte[] bytes = "你好!".getBytes(StandardCharsets.UTF_8);
+
+                               ByteBuf buffer = ctx.alloc().buffer();
+
+                               buffer.writeBytes(bytes);
+
+                               ctx.channel().writeAndFlush(buffer);
+                           }
+                       });
                     }
                 });
 
