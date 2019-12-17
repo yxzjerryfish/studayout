@@ -72,4 +72,36 @@ public class Client {
             }
         }).start();
     }
+
+    private static ChannelFuture getChannel(){
+        NioEventLoopGroup w = new NioEventLoopGroup();
+
+        Bootstrap bootstrap = new Bootstrap();
+
+        bootstrap.group(w)
+                .channel(NioSocketChannel.class)
+                .handler(new ChannelInitializer<NioSocketChannel>() {
+
+                    @Override
+                    protected void initChannel(NioSocketChannel ch)  {
+                        ch.pipeline().addLast(new ClientHandler());
+
+                        ch.pipeline().addLast(new ChannelInboundHandlerAdapter(){
+                            @Override
+                            public void channelActive(ChannelHandlerContext ctx) {
+                                System.out.println(LocalDateTime.now()+ ": 客户端写出数据");
+                                byte[] bytes = "你好!".getBytes(StandardCharsets.UTF_8);
+
+                                ByteBuf buffer = ctx.alloc().buffer();
+
+                                buffer.writeBytes(bytes);
+
+                                ctx.channel().writeAndFlush(buffer);
+                            }
+                        });
+                    }
+                });
+
+      return bootstrap.connect("localhost",6547);
+    }
 }

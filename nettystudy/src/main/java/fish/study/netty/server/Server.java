@@ -35,5 +35,15 @@ public class Server {
                 });
             }
         }).bind(6546);
+
+        ServerBootstrap bootstrap2 = new ServerBootstrap();
+        NioEventLoopGroup w2 = new NioEventLoopGroup();
+        NioEventLoopGroup r2 = new NioEventLoopGroup();
+        bootstrap2.group(w2,r2).channel(NioServerSocketChannel.class).childHandler(new ChannelInitializer<NioSocketChannel>() {
+            @Override
+            protected void initChannel(NioSocketChannel ch) throws Exception {
+
+            }
+        }).bind(6547);
     }
 }
