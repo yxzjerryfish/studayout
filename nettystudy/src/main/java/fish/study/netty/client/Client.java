@@ -58,7 +58,7 @@ public class Client {
 
     }
 
-    private static void startConsoleThread(Channel channel) {
+    public static void startConsoleThread(Channel channel) {
         new Thread(() -> {
             while (!Thread.interrupted()) {
                     System.out.println("输入消息发送至服务端: ");
@@ -73,7 +73,7 @@ public class Client {
         }).start();
     }
 
-    private static ChannelFuture getChannel(){
+    public static ChannelFuture getChannel(){
         NioEventLoopGroup w = new NioEventLoopGroup();
 
         Bootstrap bootstrap = new Bootstrap();
