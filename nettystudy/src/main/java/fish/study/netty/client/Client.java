@@ -1,6 +1,7 @@
 package fish.study.netty.client;
 
 import fish.study.netty.client.handler.ClientHandler;
+import fish.study.netty.client.handler.FirstClientHandler;
 import fish.study.netty.model.MessageRequestPacket;
 import fish.study.netty.packet.PacketCode;
 import io.netty.bootstrap.Bootstrap;
@@ -28,29 +29,30 @@ public class Client {
 
                     @Override
                     protected void initChannel(NioSocketChannel ch)  {
-                        ch.pipeline().addLast(new ClientHandler());
-
-                        ch.pipeline().addLast(new ChannelInboundHandlerAdapter(){
-                           @Override
-                           public void channelActive(ChannelHandlerContext ctx) {
-                               System.out.println(LocalDateTime.now()+ ": 客户端写出数据");
-                               byte[] bytes = "你好!".getBytes(StandardCharsets.UTF_8);
-
-                               ByteBuf buffer = ctx.alloc().buffer();
-
-                               buffer.writeBytes(bytes);
-
-                               ctx.channel().writeAndFlush(buffer);
-                           }
-                       });
+//                        ch.pipeline().addLast(new ClientHandler());
+//
+//                        ch.pipeline().addLast(new ChannelInboundHandlerAdapter(){
+//                           @Override
+//                           public void channelActive(ChannelHandlerContext ctx) {
+//                               System.out.println(LocalDateTime.now()+ ": 客户端写出数据");
+//                               byte[] bytes = "你好!".getBytes(StandardCharsets.UTF_8);
+//
+//                               ByteBuf buffer = ctx.alloc().buffer();
+//
+//                               buffer.writeBytes(bytes);
+//
+//                               ctx.channel().writeAndFlush(buffer);
+//                           }
+//                       });
+                        ch.pipeline().addLast(new FirstClientHandler());
                     }
                 });
 
         bootstrap.connect("localhost",6546).addListener(future->{
             if(future.isSuccess()){
                 System.out.println("连接成功");
-                Channel channel = ((ChannelFuture) future).channel();
-                startConsoleThread(channel);
+//                Channel channel = ((ChannelFuture) future).channel();
+//                startConsoleThread(channel);
             } else {
                 System.out.println("连接失败");
             }
