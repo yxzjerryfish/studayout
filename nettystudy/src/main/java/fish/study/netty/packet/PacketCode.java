@@ -4,6 +4,7 @@ import com.alibaba.fastjson.serializer.JSONSerializer;
 import fish.study.netty.model.*;
 import fish.study.netty.serializer.Serializer;
 import fish.study.netty.serializer.impl.JsonSerializer;
+import fish.study.netty.service.Hello;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 
@@ -51,8 +52,51 @@ public class PacketCode {
         return byteBuf;
     }
 
+    public ByteBuf encode (ByteBufAllocator byteBufAllocator, Class clz){
+        ByteBuf byteBuf = byteBufAllocator.ioBuffer();
+
+        byte[] bytes = Serializer.DEFAULT.serialize(clz);
+        byteBuf.writeInt(MAGIC_NUMBER);
+        byteBuf.writeByte(1);
+        byteBuf.writeByte(Serializer.DEFAULT.getSerializerAlgorithm());
+        byteBuf.writeByte(1);
+        byteBuf.writeInt(bytes.length);
+        byteBuf.writeBytes(bytes);
+
+        return byteBuf;
+    }
+
 
     public Packet decode(ByteBuf byteBuf) {
+        // 跳过 magic number
+        byteBuf.skipBytes(4);
+
+        // 跳过版本号
+        byteBuf.skipBytes(1);
+
+        // 序列化算法
+        byte serializeAlgorithm = byteBuf.readByte();
+
+        // 指令
+        byte command = byteBuf.readByte();
+
+        // 数据包长度
+        int length = byteBuf.readInt();
+
+        byte[] bytes = new byte[length];
+        byteBuf.readBytes(bytes);
+
+        Class<? extends Packet> requestType = getRequestType(command);
+        Serializer serializer = getSerializer(serializeAlgorithm);
+
+        if (requestType != null && serializer != null) {
+            return serializer.deserialize(requestType, bytes);
+        }
+
+        return null;
+    }
+
+    public Packet decodeHello(ByteBuf byteBuf) {
         // 跳过 magic number
         byteBuf.skipBytes(4);
 
